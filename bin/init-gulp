@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+
+## Install valid NPM via NVM, install all NVM resources, install gulp and gulp-cli.
+##
+## Usage: fin init-gulp
+
+# Abort if anything fails
+set -e
+
+#-------------------------- Execution --------------------------------
+fin exec "nvm i"
+fin exec "npm i"
+fin exec "npm uninstall npm-check-updates -g && npm install npm-check-updates -g"
+fin exec "npm i --global gulp gulp-cli"
+#-------------------------- END: Execution ---------------------------

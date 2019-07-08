@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+## Run gulp
+##
+## Usage: fin gulp
+
+# Abort if anything fails
+set -e
+
+#-------------------------- Execution --------------------------------
+fin exec "gulp ${@:-"build"}"
+#-------------------------- END: Execution ---------------------------

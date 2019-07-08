@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+commands_list=(
+    gulp
+    init-gulp
+    npm
+    open
+)
+
+if [[ "$1" == "devel" ]]; then
+    echo "Installing in devel mode..."
+    for name in "${commands_list[@]}"; do
+        repo_file_path=bin/${name}
+        local_file_path=~/.docksal/commands/${name}
+        (
+            [[ "$(shasum ${repo_file_path} | awk '{print $1}')" != "$(shasum ${local_file_path} | awk '{print $1}')" ]] &&
+                echo "Copying 'fin $name' command ..." &&
+                cp ${repo_file_path} ${local_file_path}
+        ) || echo "Fole already in place 'fin $name' :)"
+    done
+else
+    for name in "${commands_list[@]}"; do
+        echo "Installing 'fin $name' command..."
+        mkdir -p ~/.docksal/commands/ &&
+            curl -fsSL "https://raw.githubusercontent.com/Flower7C3/docksal-custom/master/bin/$name?r=${RANDOM}" -o ~/.docksal/commands/${name} &&
+            chmod +x ~/.docksal/commands/${name}
+    done
+fi

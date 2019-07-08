@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+## Run npm
+##
+## Usage: fin npm
+
+# Abort if anything fails
+set -e
+
+#-------------------------- Execution --------------------------------
+fin exec "npm ${@}"
+#-------------------------- END: Execution ---------------------------
+

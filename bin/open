@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+## Open VIRTUAL_HOST in browser.
+##
+## Usage: fin open
+
+#-------------------------- Settings --------------------------------
+url="http://${VIRTUAL_HOST}:${DOCKSAL_VHOST_PROXY_PORT_HTTP:-80}$1"
+#-------------------------- End: Settings ---------------------------
+
+#-------------------------- Execution -------------------------------
+if [[ "${DOCKER_RUNNING}" != "true" ]]; then
+  fin start
+fi
+echo "Opening $url"
+open ${url}
+#-------------------------- END: Execution --------------------------
