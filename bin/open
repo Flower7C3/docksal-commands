@@ -12,6 +12,17 @@ url="http://${VIRTUAL_HOST}:${DOCKSAL_VHOST_PROXY_PORT_HTTP:-80}$1"
 if [[ "${DOCKER_RUNNING}" != "true" ]]; then
   fin start
 fi
-echo "Opening $url"
-open ${url}
+if [[ "$OS_TYPE" == "Darwin" ]]; then
+    echo "Opening $url"
+    open "$url"
+elif [[ "$OS_TYPE" == "Linux" ]]; then
+    echo "Opening $url"
+    xdg-open "$url"
+elif [[ "$OS_TYPE" == "Cygwin" ]]; then
+    echo "Starting $url"
+    start "$url"
+else
+    echo "Copy and paste to browser:"
+    echo "$url"
+fi
 #-------------------------- END: Execution --------------------------
