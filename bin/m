@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+## Execute mutagen command
+##
+## Usage: fin m
+
+fin mutagen $@

@@ -11,7 +11,9 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Flower7C3/docksal-custom/mas
 
 ## Available commands
 
-* init-gulp - install valid NPM via NVM, install all NVM resources, install gulp and gulp-cli
-* gulp - run gulp on CLI container
-* npm - run npm on CLI container
-* open - open http://${VIRTUAL_HOST} URL in browser
+* `init-gulp` - install valid NPM via NVM, install all NVM resources, install `gulp` and `gulp-cli`
+* `gulp` - run gulp on CLI container
+* `npm` - run npm on CLI container
+* `open` - open **http://${VIRTUAL_HOST}** URL in browser
+* `opens` - open **https://${VIRTUAL_HOST}** URL in browser
+* `m` - shortcut for `mutagen` command ([see Mutagen for Docksal](https://github.com/nicoschi/mutagen-for-docksal))
