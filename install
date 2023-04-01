@@ -4,6 +4,7 @@ commands_list=(
     gulp
     init-gulp
     npm
+    open
     opens
     m
 )
