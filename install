@@ -4,7 +4,8 @@ commands_list=(
     gulp
     init-gulp
     npm
-    open
+    opens
+    m
 )
 
 if [[ "$1" == "devel" ]]; then
