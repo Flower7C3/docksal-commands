@@ -4,4 +4,17 @@
 ##
 ## Usage: fin m
 
-fin mutagen $@
+cd "$PROJECT_ROOT" || exit 1
+
+if [[ "$MUTAGEN" != "1" ]]; then
+    echo "Mutagen not enabled in project. Please define MUTAGEN=1 in docksal.env file"
+    exit 2
+fi
+
+command="$*"
+if [[ "$command" == "reset" ]]; then
+    rm -v mutagen.yml.lock
+    mutagen sync terminate "${PROJECT_NAME}-cli"
+else
+    fin mutagen "$command"
+fi
