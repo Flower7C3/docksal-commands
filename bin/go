@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+## Pull changes and start drupal project
+##
+## Usage: fin go
+
+git pull
+fin start
+fin drush cim -y
+open "$(fin drush uli)"
