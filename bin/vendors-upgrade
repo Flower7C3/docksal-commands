@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+## Upgrade project vendors
+##
+## Usage: fin vendors-upgrade [-1] [-2] [-c "composer.json directories"] [-n "package.json directories"]
+
+# Abort if anything fails
+set -e
+
+#-------------------------- Configure --------------------------------
+COMPOSER_PATHS=()
+composer_command="composer"
+NPM_PATHS=()
+while getopts "12:c:n:" option; do
+    case $option in
+    1)
+        composer_command="composer1"
+        ;;
+    2)
+        composer_command="composer2"
+        ;;
+    c)
+        COMPOSER_PATHS=($OPTARG)
+        ;;
+    n)
+        NPM_PATHS=($OPTARG)
+        ;;
+    *)
+        echo "Usage: $0 [-c \"composer.json directories\"] [-n \"package.json directories\"]"
+        exit 1
+        ;;
+    esac
+done
+
+#-------------------------- Execution --------------------------------
+
+if [[ "$(whoami)" == "docker" ]]; then
+
+    for composer_path in "${COMPOSER_PATHS[@]}"; do
+        cd "$PROJECT_ROOT/$composer_path" || exit
+        echo "=== Updating $composer_command in $composer_path ==="
+        if [[ "$composer_command" == "composer1" ]]; then
+            $composer_command show | sed -n '/requires (dev)$/,/^$/p' | grep -v 'requires' | grep -v 'ext-' | grep -v 'php ' | cut -d ' ' -f1 | xargs $composer_command require
+        fi
+        if [[ "$composer_command" == "composer2" ]]; then
+            $composer_command show --no-dev --direct --name-only | xargs $composer_command require
+        fi
+        $composer_command show -s | sed -n '/requires (dev)$/,/^$/p' | grep -v 'requires (dev)' | cut -d ' ' -f1 | grep -v 'roave/security-advisories' | xargs $composer_command require --dev
+        # shellcheck disable=SC2207
+        packages=($($composer_command recipes | grep '(update available)' | cut -d ' ' -f3))
+        for package in "${packages[@]}"; do
+            $composer_command recipes:install --force -n "$package"
+        done
+    done
+
+    for npm_path in "${NPM_PATHS[@]}"; do
+        cd "$PROJECT_ROOT/$npm_path" || exit
+        echo "=== Updating NPM in $npm_path ==="
+        npm update
+        npm audit fix --force
+    done
+
+else
+    file_name="$(basename "$0")"
+    cd "$PROJECT_ROOT"
+    cp "$0" "$file_name"
+    trap "rm '""$file_name""'" EXIT
+    fin exec "$file_name" $@
+fi
+#-------------------------- END: Execution --------------------------------

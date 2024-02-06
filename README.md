@@ -17,3 +17,4 @@ bash <(curl -fsSL https://raw.githubusercontent.com/Flower7C3/docksal-custom/mas
 * `open` - open **http://${VIRTUAL_HOST}** URL in browser
 * `opens` - open **https://${VIRTUAL_HOST}** URL in browser
 * `m` - shortcut for `mutagen` command ([see Mutagen for Docksal](https://github.com/nicoschi/mutagen-for-docksal))
+* `upgrade-vendors` - runs composer deep update and npm update

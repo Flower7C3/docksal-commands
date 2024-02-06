@@ -8,6 +8,7 @@ commands_list=(
     opens
     m
     go
+    vendors-upgrade
 )
 
 if [[ "$1" == "devel" ]]; then
@@ -19,7 +20,7 @@ if [[ "$1" == "devel" ]]; then
             [[ "$(shasum "$repo_file_path" | awk '{print $1}')" != "$(shasum "$local_file_path" | awk '{print $1}')" ]] &&
                 echo "Copying 'fin $name' command ..." &&
                 cp "$repo_file_path" "$local_file_path"
-        ) || echo "Fole already in place 'fin $name' :)"
+        ) || echo "File already in place 'fin $name' :)"
     done
 else
     for name in "${commands_list[@]}"; do
