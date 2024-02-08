@@ -9,6 +9,8 @@ commands_list=(
     m
     go
     vendors-upgrade
+    ssh
+    ssh-with-password
 )
 
 if [[ "$1" == "devel" ]]; then

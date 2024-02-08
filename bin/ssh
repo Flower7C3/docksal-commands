@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+
+## Connects to remote server by host id defined in docksal.env file and execute command
+##
+## Usage: fin remote REMOTE_SSH_HOST_ID [REMOTE_SSH_COMMAND]
+
+# Abort if anything fails
+set -e
+
+#-------------------------- Configure --------------------------------
+{
+    if [[ -z "$REMOTE_SSH_USERNAME" ]]; then
+        echo "Variable \$REMOTE_SSH_USERNAME is not defined. Please add it in '.docksal.local' file."
+        exit 11
+    fi
+    if [[ -z "$REMOTE_SSH_PASSWORD" ]]; then
+        echo "Variable \$REMOTE_SSH_PASSWORD is not defined. Please add it in '.docksal.local' file."
+        exit 12
+    fi
+    if [[ -z "$REMOTE_SSH_HOSTS" ]]; then
+        # shellcheck disable=SC2028
+        echo "Variable \$REMOTE_SSH_HOSTS is not defined. Please add it in '.docksal.local' file, eg:"
+        printf "\033[0;35mREMOTE_SSH_HOSTS=\"key1 address1\n                  key2 address2\"\033[0m\n"
+        exit 13
+    fi
+}
+{
+    declare -A REMOTE_SSH_HOSTS_ARR=()
+    while read -r a b; do
+        REMOTE_SSH_HOSTS_ARR["$a"]="$b"
+    done < <(echo "$REMOTE_SSH_HOSTS")
+}
+{
+    REMOTE_SSH_HOST_ID="${1:-'undefined'}"
+    if [[ -z "${REMOTE_SSH_HOSTS_ARR["${REMOTE_SSH_HOST_ID}"]}" ]]; then
+        # shellcheck disable=SC2207
+        apps=($(for x in "${!REMOTE_SSH_HOSTS_ARR[@]}"; do echo "$x"; done | sort | uniq))
+        fin help ssh
+        app_names="$(printf "%s, " "${apps[@]}")"
+        printf "REMOTE_SSH_HOST_ID: %s\n" "${app_names:0:-2}"
+        exit 14
+    fi
+    REMOTE_SSH_HOSTNAME="${REMOTE_SSH_HOSTS_ARR["${REMOTE_SSH_HOST_ID}"]}"
+}
+{
+    shift
+    REMOTE_SSH_COMMAND="$*"
+}
+#-------------------------- Execution --------------------------------
+(
+    cd "$(dirname "$0")"
+    ./ssh-with-password "$REMOTE_SSH_USERNAME" "$REMOTE_SSH_PASSWORD" "$REMOTE_SSH_HOSTNAME" "$REMOTE_SSH_COMMAND"
+)
+#-------------------------- END: Execution --------------------------------
