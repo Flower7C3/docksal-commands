@@ -5,7 +5,7 @@
 ## Usage: fin remote REMOTE_SSH_HOST_ID [REMOTE_SSH_COMMAND]
 
 # Abort if anything fails
-set -e
+#set -e
 
 #-------------------------- Configure --------------------------------
 {
@@ -35,10 +35,12 @@ set -e
     if [[ -z "${REMOTE_SSH_HOSTS_ARR["${REMOTE_SSH_HOST_ID}"]}" ]]; then
         # shellcheck disable=SC2207
         apps=($(for x in "${!REMOTE_SSH_HOSTS_ARR[@]}"; do echo "$x"; done | sort | uniq))
-        fin help ssh
-        app_names="$(printf "%s, " "${apps[@]}")"
-        printf "REMOTE_SSH_HOST_ID: %s\n" "${app_names:0:-2}"
-        exit 14
+        PS3="Select app name: "
+        select app in "${apps[@]}"; do
+            [[ $app ]] || continue
+            REMOTE_SSH_HOST_ID="$app"
+            break
+        done
     fi
     REMOTE_SSH_HOSTNAME="${REMOTE_SSH_HOSTS_ARR["${REMOTE_SSH_HOST_ID}"]}"
 }
@@ -48,7 +50,8 @@ set -e
 }
 #-------------------------- Execution --------------------------------
 (
-    cd "$(dirname "$0")"
+    cd "$(dirname "$0")" || exit 14
+    printf "\033[1;35mConnect to \033[1;95m%s\033[1;35m host\033[0m\n" "$REMOTE_SSH_HOSTNAME"
     ./ssh-with-password "$REMOTE_SSH_USERNAME" "$REMOTE_SSH_PASSWORD" "$REMOTE_SSH_HOSTNAME" "$REMOTE_SSH_COMMAND"
 )
 #-------------------------- END: Execution --------------------------------
