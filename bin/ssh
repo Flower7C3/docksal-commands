@@ -2,7 +2,7 @@
 
 ## Connects to remote server by host id defined in docksal.env file and execute command
 ##
-## Usage: fin remote REMOTE_SSH_HOST_ID [REMOTE_SSH_COMMAND]
+## Usage: fin remote <REMOTE_SSH_HOST_ID> [REMOTE_SSH_COMMAND]
 
 # Abort if anything fails
 #set -e
